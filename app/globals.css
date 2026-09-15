@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+:root {
+  --ink: #0e1116;
+  --surface: #171b22;
+  --line: #252a33;
+  --gold: #e4b860;
+  --sand: #f5f2ec;
+  --muted: #8a929e;
+}
+
+@theme inline {
+  --color-ink: var(--ink);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-gold: var(--gold);
+  --color-sand: var(--sand);
+  --color-muted: var(--muted);
+
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+}
+
+body {
+  background: var(--ink);
+  color: var(--sand);
+  font-family: var(--font-sans);
+}
