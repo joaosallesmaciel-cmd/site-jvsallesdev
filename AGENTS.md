@@ -34,7 +34,7 @@ Largura máxima de conteúdo 1200px. Texto corrido nunca passa de 72 caracteres.
 Espaçamento base 8: 4 · 8 · 16 · 24 · 48 · 96.
 
 ## Logo
-Componente Logo.tsx já existe. O chevron é um path com id jvs-chevron
+Componente Logo.tsx já existe. O chevron é um path com class="jvs-chevron"
 e é o único elemento do logo que anima. A palavra herda currentColor.
 Nunca separar o chevron do nome no lockup horizontal.
 
@@ -52,6 +52,11 @@ Easing padrão cubic-bezier(0.2,0.8,0.2,1). Duração 400–700ms.
 Nada acima de 1s, exceto o campo generativo, que é contínuo.
 Toda animação precisa de caminho alternativo em prefers-reduced-motion: reduce.
 Sem exceção — vale para GSAP, Lenis, transition de CSS e o campo generativo.
+
+Exceção ao GSAP: animação de entrada que roda uma vez, acima da dobra,
+vai em @keyframes de CSS. CSS anima antes da hidratação; GSAP espera o
+JavaScript e atrasaria o LCP. As keyframes ficam no globals.css, nunca
+injetadas no componente.
 
 Uma biblioteca de animação só. Não instale uma segunda.
 Se aparecer um caso que o GSAP não resolve, pare e pergunte antes de instalar.
