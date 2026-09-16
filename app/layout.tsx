@@ -25,6 +25,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: "jvsalles",
+  description:
+    "Automatizo processos que travam sua empresa por dentro: financeiro, gestão, controle e dados. Desenvolvimento sob medida em Palmas-TO.",
 };
 
 export default function RootLayout({
