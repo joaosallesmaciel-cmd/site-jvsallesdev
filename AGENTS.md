@@ -72,6 +72,8 @@ Teto seguro medido com CPU 6x: 6 mil partículas. Não passe disso.
 Orientação por campo de fluxo (simplex ou seno composto).
 Cursor perturba: rotação em direção ao movimento + dourado por proximidade.
 Cor em repouso: --line. Cor no pico: --gold.
+Só comece o rAF com a página ociosa (requestIdleCallback, teto de 2s)
+e o canvas na viewport. Antes disso, um quadro estático.
 Pausar o rAF quando a aba está oculta e quando o canvas sai da viewport.
 aria-hidden="true". Não pode ser o elemento de LCP.
 prefers-reduced-motion: renderiza um quadro estático e para.
