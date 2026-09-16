@@ -69,7 +69,7 @@ prefers-reduced-motion: renderiza um quadro estático e para.
 
 ## Proibido
 Ícone de robô, cérebro, chip, circuito ou rede neural.
-Emoji no lugar de ícone. Texto abaixo de 15px.
+Emoji no lugar de ícone. Texto de leitura abaixo de 15px.
 Lorem ipsum — se faltar texto, pergunte.
 Instalar biblioteca de componentes inteira para usar um efeito: copie o componente.
 
