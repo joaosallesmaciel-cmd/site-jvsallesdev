@@ -11,19 +11,25 @@ const VIEWBOX_H = 486;
 const CENTER_X = VIEWBOX_W / 2;
 const CENTER_Y = VIEWBOX_H / 2;
 
-// density 1 = 3000 partículas em 2560×1440. Telas menores recebem menos.
-const TARGET_COUNT = 3000;
+// density 1 = maxParticles em 2560×1440. Telas menores recebem menos.
 const TARGET_AREA = 2560 * 1440;
 const MAX_DPR = 2;
 const COLOR_STEPS = 32;
 const TAU = Math.PI * 2;
+// Espera no máximo 2s pela ociosidade antes de começar.
+const IDLE_TIMEOUT = 2000;
+// Abaixo desta largura a tela é de celular e leva menos partículas.
+const SMALL_SCREEN = 640;
+const SMALL_SCREEN_FACTOR = 0.75;
 
 // Valores de --line e --gold, usados se os tokens não estiverem no CSS.
 const FALLBACK_LINE = "#252a33";
 const FALLBACK_GOLD = "#e4b860";
 
 type ChevronFieldProps = {
-  /** Multiplicador da contagem. 1 = 3000 partículas em 2560×1440. */
+  /** Teto de partículas, antes dos ajustes de tela e de CPU. */
+  maxParticles?: number;
+  /** Multiplicador da contagem. 1 = maxParticles em 2560×1440. */
   density?: number;
   /** Multiplicador da velocidade do campo de fluxo. */
   speed?: number;
@@ -41,6 +47,16 @@ function flow(x: number, y: number, t: number) {
     Math.cos(v * 2.3 - t * 0.17) * 1.0 +
     Math.sin((u + v) * 1.1 + t * 0.09) * 0.8
   );
+}
+
+// Menos partículas em máquina fraca. Sem a informação, assume o caso do meio.
+function cpuFactor() {
+  const cores = navigator.hardwareConcurrency;
+  if (!cores) return 0.7;
+  if (cores <= 2) return 0.35;
+  if (cores <= 4) return 0.55;
+  if (cores <= 6) return 0.8;
+  return 1;
 }
 
 // Menor diferença angular, em [-π, π].
@@ -66,6 +82,7 @@ function buildRamp(el: Element) {
 }
 
 export function ChevronField({
+  maxParticles = 3000,
   density = 1,
   speed = 1,
   influenceRadius = 180,
@@ -109,6 +126,8 @@ export function ChevronField({
     let frame = 0;
     let visible = document.visibilityState === "visible";
     let inView = false;
+    // Até a página ficar ociosa, o canvas mostra só um quadro estático.
+    let idle = false;
 
     const layout = (nextWidth: number, nextHeight: number) => {
       const nextDpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
@@ -120,7 +139,17 @@ export function ChevronField({
       canvas.height = Math.round(height * dpr);
 
       const area = width * height;
-      count = area > 0 ? Math.round(TARGET_COUNT * density * Math.min(1, area / TARGET_AREA)) : 0;
+      const screenFactor = width < SMALL_SCREEN ? SMALL_SCREEN_FACTOR : 1;
+      count =
+        area > 0
+          ? Math.round(
+              maxParticles *
+                density *
+                Math.min(1, area / TARGET_AREA) *
+                screenFactor *
+                cpuFactor(),
+            )
+          : 0;
       posX = new Float32Array(count);
       posY = new Float32Array(count);
       angle = new Float32Array(count);
@@ -251,7 +280,7 @@ export function ChevronField({
     };
 
     const sync = () => {
-      const shouldRun = visible && inView && !reducedMotion.matches && count > 0;
+      const shouldRun = idle && visible && inView && !reducedMotion.matches && count > 0;
       if (shouldRun && !frame) {
         last = 0;
         frame = requestAnimationFrame(tick);
@@ -305,6 +334,17 @@ export function ChevronField({
       sync();
     });
 
+    // Só começa depois que a página fica ociosa. Sem requestIdleCallback
+    // (Safari antigo), cai no timeout.
+    const onIdle = () => {
+      idle = true;
+      sync();
+    };
+    const hasIdleCallback = typeof window.requestIdleCallback === "function";
+    const idleHandle = hasIdleCallback
+      ? window.requestIdleCallback(onIdle, { timeout: IDLE_TIMEOUT })
+      : window.setTimeout(onIdle, IDLE_TIMEOUT);
+
     resizeObserver.observe(canvas);
     intersectionObserver.observe(canvas);
     window.addEventListener("pointermove", onPointerMove, { passive: true });
@@ -316,6 +356,8 @@ export function ChevronField({
 
     return () => {
       if (frame) cancelAnimationFrame(frame);
+      if (hasIdleCallback) window.cancelIdleCallback(idleHandle);
+      else clearTimeout(idleHandle);
       resizeObserver.disconnect();
       intersectionObserver.disconnect();
       window.removeEventListener("pointermove", onPointerMove);
@@ -325,7 +367,7 @@ export function ChevronField({
       document.removeEventListener("visibilitychange", onVisibility);
       reducedMotion.removeEventListener("change", onMotionChange);
     };
-  }, [density]);
+  }, [density, maxParticles]);
 
   return (
     <canvas
