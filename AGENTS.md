@@ -64,7 +64,11 @@ Se aparecer um caso que o GSAP não resolve, pare e pergunte antes de instalar.
 ## Campo de chevrons — assinatura do site
 Canvas 2D. Nunca WebGL, nunca three.js.
 Partícula = o chevron da marca, desenhado uma vez como Path2D e reusado
-com setTransform. Alvo 3000 partículas, 60fps, devicePixelRatio no máximo 2.
+com setTransform. 60fps, devicePixelRatio no máximo 2.
+Alvo 3000 partículas num desktop grande com 8 ou mais núcleos.
+A contagem final é adaptativa: cai por área de tela, largura abaixo
+de 640px e navigator.hardwareConcurrency. Celular fica perto de 200.
+Teto seguro medido com CPU 6x: 6 mil partículas. Não passe disso.
 Orientação por campo de fluxo (simplex ou seno composto).
 Cursor perturba: rotação em direção ao movimento + dourado por proximidade.
 Cor em repouso: --line. Cor no pico: --gold.
