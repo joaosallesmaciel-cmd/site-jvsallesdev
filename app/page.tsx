@@ -9,11 +9,11 @@ export default function Home() {
       <ChevronField className="fixed inset-0 -z-10" />
 
       <div className="mx-auto flex min-h-dvh w-full max-w-[1200px] flex-col px-6 md:px-16">
-        <header className="py-6">
+        <header className="py-4 md:py-6">
           <Logo height={28} />
         </header>
 
-        <main className="flex flex-1 items-center py-12">
+        <main className="flex flex-1 items-center py-4 md:py-12">
           <div className="grid w-full grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
             <div className="col-span-4 md:col-span-8 lg:col-span-7">
               <h1 className="font-display text-[44px] leading-[44px] font-semibold tracking-[-0.03em] text-sand md:text-[72px] md:leading-[72px]">
@@ -25,7 +25,7 @@ export default function Home() {
                 controle e dados.
               </p>
 
-              <div className="mt-12 flex flex-wrap gap-4">
+              <div className="mt-6 flex flex-wrap gap-4 md:mt-12">
                 <Button
                   href="https://wa.me/5563992300944"
                   target="_blank"
@@ -45,18 +45,18 @@ export default function Home() {
               </p>
 
               <div className="mt-6 grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
-                <div className="col-span-4 md:col-span-3 lg:col-span-4">
-                  <Stat value="3,5h" label="Por dia em tarefas manuais" />
+                <div className="col-span-2 md:col-span-3 lg:col-span-4">
+                  <Stat value="3,5h" label="Tarefas manuais por dia" />
                 </div>
-                <div className="col-span-4 md:col-span-3 lg:col-span-4">
-                  <Stat value="39%" label="Das faturas têm erro" />
+                <div className="col-span-2 md:col-span-3 lg:col-span-4">
+                  <Stat value="39%" label="Faturas com erro" />
                 </div>
                 <div className="col-span-4 md:col-span-2 lg:col-span-4">
-                  <Stat value="15-25%" label="Da receita perdida com dado ruim" />
+                  <Stat value="15-25%" label="Receita perdida com dado ruim" />
                 </div>
               </div>
 
-              <p className="mt-6 font-mono text-[12px] leading-[14px] text-muted">
+              <p className="mt-6 font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
                 Automation Anywhere/OnePoll · IOFM · MIT Sloan Management Review
               </p>
             </div>
