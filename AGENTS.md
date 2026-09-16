@@ -18,10 +18,15 @@ Space Grotesk (display 300/500/600) · Inter (texto 400/500/600)
 JetBrains Mono (rótulo, número, dado — caixa alta, tracking +16%)
 Carregar com next/font/google, subset latin, display swap.
 
-Escala base 16px:
+## Escala e piso de tamanho
 display 72/72/-3%/600 · h1 48/50/-3%/600 · h2 32/37/-2%/600
-h3 24/31/-1%/500 · corpo 18/29/400 · pequeno 15/24/400 · mono 12/14/+16%/500
-Mobile: display 44, h1 34, corpo continua 18. Nada abaixo de 15px.
+h3 24/31/-1%/500 · corpo 18/29/400 · pequeno 15/24/400
+rótulo mono 12/14/+16%/500 — caixa alta, no máximo 4 palavras
+
+O piso de 15px vale para todo texto de leitura. A única exceção é o
+rótulo mono em caixa alta, que pode ir a 12px e nunca abaixo.
+Nunca 12px em frase, parágrafo, label de formulário ou mensagem de erro.
+Mobile: display 44, h1 34. Corpo permanece 18.
 
 ## Grade
 12 colunas · goteira 24 · margem 64. Tablet 8 col. Mobile 4 col.
@@ -38,11 +43,18 @@ M120.25 0 L0 69.43 L240.51 486 L314.92 486 L555.43 69.43 L435.17 0 L277.71 272.7
 Chanfro da base: 74 unidades de largura (240.51 → 314.92).
 
 ## Movimento
-GSAP (core, ScrollTrigger, SplitText, DrawSVG) com o hook useGSAP.
+GSAP 3 — core mais ScrollTrigger, SplitText e DrawSVG, todos já dentro do pacote gsap.
+@gsap/react para o hook useGSAP. É ele que faz o cleanup no unmount.
+Registrar plugins uma vez: gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, DrawSVG)
 Lenis para scroll suave.
+Hover, foco e mudança de estado: transition do CSS, sem biblioteca.
 Easing padrão cubic-bezier(0.2,0.8,0.2,1). Duração 400–700ms.
 Nada acima de 1s, exceto o campo generativo, que é contínuo.
 Toda animação precisa de caminho alternativo em prefers-reduced-motion: reduce.
+Sem exceção — vale para GSAP, Lenis, transition de CSS e o campo generativo.
+
+Uma biblioteca de animação só. Não instale uma segunda.
+Se aparecer um caso que o GSAP não resolve, pare e pergunte antes de instalar.
 
 ## Campo de chevrons — assinatura do site
 Canvas 2D. Nunca WebGL, nunca three.js.
