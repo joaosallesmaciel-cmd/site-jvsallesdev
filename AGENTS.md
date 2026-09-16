@@ -21,7 +21,7 @@ Carregar com next/font/google, subset latin, display swap.
 ## Escala e piso de tamanho
 display 72/72/-3%/600 · h1 48/50/-3%/600 · h2 32/37/-2%/600
 h3 24/31/-1%/500 · corpo 18/29/400 · pequeno 15/24/400
-rótulo mono 12/14/+16%/500 — caixa alta, no máximo 4 palavras
+rótulo mono 12/14/+16%/500 — caixa alta, no máximo 6 palavras
 
 O piso de 15px vale para todo texto de leitura. A única exceção é o
 rótulo mono em caixa alta, que pode ir a 12px e nunca abaixo.
