@@ -45,11 +45,15 @@ Chanfro da base: 74 unidades de largura (240.51 → 314.92).
 ## Movimento
 GSAP 3 — core mais ScrollTrigger, SplitText e DrawSVG, todos já dentro do pacote gsap.
 @gsap/react para o hook useGSAP. É ele que faz o cleanup no unmount.
-Registrar plugins uma vez: gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, DrawSVG)
+Registre só os plugins que o componente usa, no próprio componente.
+Cada plugin não usado é peso que todo visitante baixa. ScrollTrigger,
+SplitText e DrawSVG entram por import dinâmico quando a seção que
+os usa existir.
 Lenis para scroll suave.
 Hover, foco e mudança de estado: transition do CSS, sem biblioteca.
 Easing padrão cubic-bezier(0.2,0.8,0.2,1). Duração 400–700ms.
-Nada acima de 1s, exceto o campo generativo, que é contínuo.
+Nada acima de 1s, exceto o campo generativo, que é contínuo, e a
+coreografia de entrada do hero, que vai até 2,4s no total.
 Toda animação precisa de caminho alternativo em prefers-reduced-motion: reduce.
 Sem exceção — vale para GSAP, Lenis, transition de CSS e o campo generativo.
 
@@ -70,9 +74,9 @@ Se aparecer um caso que o GSAP não resolve, pare e pergunte antes de instalar.
 Canvas 2D. Nunca WebGL, nunca three.js.
 Partícula = o chevron da marca, desenhado uma vez como Path2D e reusado
 com setTransform. 60fps, devicePixelRatio no máximo 2.
-Alvo 3000 partículas num desktop grande com 8 ou mais núcleos.
+Alvo aproximado de 1800 partículas num desktop grande com 8 ou mais núcleos.
 A contagem final é adaptativa: cai por área de tela, largura abaixo
-de 640px e navigator.hardwareConcurrency. Celular fica perto de 200.
+de 640px e navigator.hardwareConcurrency. Celular fica perto de 120.
 Teto seguro medido com CPU 6x: 6 mil partículas. Não passe disso.
 Orientação por campo de fluxo (simplex ou seno composto).
 Cursor perturba: rotação em direção ao movimento + dourado por proximidade.
