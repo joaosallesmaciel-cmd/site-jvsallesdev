@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useImperativeHandle, useRef, type Ref } from "react";
+import { useEffect, useRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 // Geometria do chevron, AGENTS.md › Logo. Aponta para +y.
-export const CHEVRON_PATH =
+const CHEVRON_PATH =
   "M120.25 0 L0 69.43 L240.51 486 L314.92 486 L555.43 69.43 L435.17 0 L277.71 272.73 Z";
-export const VIEWBOX_W = 555.43;
-export const VIEWBOX_H = 486;
+const VIEWBOX_W = 555.43;
+const VIEWBOX_H = 486;
 const CENTER_X = VIEWBOX_W / 2;
 const CENTER_Y = VIEWBOX_H / 2;
 
@@ -21,9 +21,6 @@ const PEAK_ALPHA = 0.6;
 const CHEVRON_FILL = 0.27;
 const SPACING_FACTOR = 1.3;
 const COLOR_STEPS = 32;
-// Níveis de escurecimento das vizinhas durante a coreografia de entrada.
-const DIM_STEPS = 4;
-const DIM_MAX = 0.8;
 const TAU = Math.PI * 2;
 // Espera no máximo 2s pela ociosidade antes de começar.
 const IDLE_TIMEOUT = 2000;
@@ -35,29 +32,7 @@ const SMALL_SCREEN_FACTOR = 0.75;
 const FALLBACK_LINE = "#252a33";
 const FALLBACK_GOLD = "#e4b860";
 
-/** Uma partícula do campo, em px CSS da viewport. */
-export type PickedChevron = {
-  index: number;
-  /** Centro do chevron na viewport. */
-  x: number;
-  y: number;
-  /** Rotação em graus, pronta para o transform de um SVG que aponta para +y. */
-  rotation: number;
-  /** Largura do chevron em px CSS. */
-  size: number;
-};
-
-export type ChevronFieldHandle = {
-  /** Escolhe a partícula visível mais próxima do ponto, dentro do raio. Tudo em px CSS da viewport. */
-  pick(region: { x: number; y: number; radius: number }): PickedChevron | null;
-  /** Oculta a partícula e escurece as vizinhas dentro do raio. */
-  focus(index: number, options?: { dimRadius?: number }): void;
-  /** Desfaz o focus: a partícula volta e as vizinhas clareiam. */
-  release(): void;
-};
-
 type ChevronFieldProps = {
-  ref?: Ref<ChevronFieldHandle>;
   /** Teto de partículas, antes dos ajustes de tela e de CPU. */
   maxParticles?: number;
   /** Multiplicador da contagem. 1 = maxParticles em 2560×1440. */
@@ -100,28 +75,21 @@ function parseHex(value: string, fallback: string) {
   return [0, 2, 4].map((i) => parseInt(hex.slice(i, i + 2), 16));
 }
 
-// Rampa de --line (repouso) a --gold (pico), repetida em DIM_STEPS níveis
-// de escurecimento. A intensidade mora na opacidade: REST_ALPHA em repouso,
-// PEAK_ALPHA no pico. Índice = nível * COLOR_STEPS + calor.
+// Rampa de --line (repouso) a --gold (pico). A intensidade mora na
+// opacidade: REST_ALPHA em repouso, PEAK_ALPHA no pico.
 function buildRamp(el: Element) {
   const style = getComputedStyle(el);
   const line = parseHex(style.getPropertyValue("--line").trim(), FALLBACK_LINE);
   const gold = parseHex(style.getPropertyValue("--gold").trim(), FALLBACK_GOLD);
-  const ramp: string[] = [];
-  for (let level = 0; level < DIM_STEPS; level++) {
-    const dim = (level / (DIM_STEPS - 1)) * DIM_MAX;
-    for (let step = 0; step < COLOR_STEPS; step++) {
-      const k = step / (COLOR_STEPS - 1);
-      const [r, g, b] = line.map((c, i) => Math.round(c + (gold[i] - c) * k));
-      const alpha = (REST_ALPHA + (PEAK_ALPHA - REST_ALPHA) * k) * (1 - dim);
-      ramp.push(`rgb(${r} ${g} ${b} / ${alpha.toFixed(3)})`);
-    }
-  }
-  return ramp;
+  return Array.from({ length: COLOR_STEPS }, (_, step) => {
+    const k = step / (COLOR_STEPS - 1);
+    const [r, g, b] = line.map((c, i) => Math.round(c + (gold[i] - c) * k));
+    const alpha = REST_ALPHA + (PEAK_ALPHA - REST_ALPHA) * k;
+    return `rgb(${r} ${g} ${b} / ${alpha.toFixed(3)})`;
+  });
 }
 
 export function ChevronField({
-  ref,
   maxParticles = 3000,
   density = 1,
   speed = 1,
@@ -131,14 +99,6 @@ export function ChevronField({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const speedRef = useRef(speed);
   const radiusRef = useRef(influenceRadius);
-  const handleRef = useRef<ChevronFieldHandle | null>(null);
-
-  useImperativeHandle(ref, () => ({
-    pick: (region) => handleRef.current?.pick(region) ?? null,
-    focus: (index, options) => handleRef.current?.focus(index, options),
-    release: () => handleRef.current?.release(),
-  }));
-
   useEffect(() => {
     speedRef.current = speed;
     radiusRef.current = influenceRadius;
@@ -162,15 +122,10 @@ export function ChevronField({
     let posY = new Float32Array(0);
     let angle = new Float32Array(0);
     let heat = new Float32Array(0);
-    let dim = new Float32Array(0);
     let bucket = new Uint8Array(0);
     let order = new Uint32Array(0);
-    const bucketStart = new Uint32Array(DIM_STEPS * COLOR_STEPS + 1);
-    const bucketNext = new Uint32Array(DIM_STEPS * COLOR_STEPS);
-
-    // Coreografia de entrada: partícula oculta e foco que escurece as vizinhas.
-    let hiddenIndex = -1;
-    let focusCenter: { x: number; y: number; radius: number } | null = null;
+    const bucketStart = new Uint32Array(COLOR_STEPS + 1);
+    const bucketNext = new Uint32Array(COLOR_STEPS);
 
     const pointer = { x: 0, y: 0, prevX: 0, prevY: 0, vx: 0, vy: 0, active: false };
     let time = 0;
@@ -207,12 +162,8 @@ export function ChevronField({
       posY = new Float32Array(count);
       angle = new Float32Array(count);
       heat = new Float32Array(count);
-      dim = new Float32Array(count);
       bucket = new Uint8Array(count);
       order = new Uint32Array(count);
-      // A grade foi refeita: os índices antigos não valem mais.
-      hiddenIndex = -1;
-      focusCenter = null;
 
       if (count > 0) {
         // Grade com jitter: cobre a tela sem aglomerar. Sorteia `count` células.
@@ -257,7 +208,6 @@ export function ChevronField({
       const turnK = 1 - Math.exp(-dt * 5);
       const riseK = 1 - Math.exp(-dt * 14);
       const fallK = 1 - Math.exp(-dt * 1.8);
-      const dimK = 1 - Math.exp(-dt * 8);
 
       for (let i = 0; i < count; i++) {
         const x = posX[i];
@@ -284,16 +234,6 @@ export function ChevronField({
         angle[i] += wrap(target - angle[i]) * turnK;
         const h = heat[i];
         heat[i] = h + (near - h) * (near > h ? riseK : fallK);
-
-        // Escurece as vizinhas do chevron em foco, mais forte quanto mais perto.
-        let dimTarget = 0;
-        if (focusCenter) {
-          const dx = x - focusCenter.x;
-          const dy = y - focusCenter.y;
-          const d = Math.hypot(dx, dy);
-          if (d < focusCenter.radius) dimTarget = 1 - d / focusCenter.radius;
-        }
-        dim[i] += (dimTarget - dim[i]) * dimK;
       }
     };
 
@@ -302,30 +242,21 @@ export function ChevronField({
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (count === 0) return;
 
-      // Agrupa por cor para trocar fillStyle no máximo DIM_STEPS * COLOR_STEPS vezes.
-      const buckets = DIM_STEPS * COLOR_STEPS;
+      // Agrupa por cor para trocar fillStyle no máximo COLOR_STEPS vezes.
       bucketStart.fill(0);
-      let drawn = 0;
       for (let i = 0; i < count; i++) {
-        if (i === hiddenIndex) continue;
-        const level = Math.min(DIM_STEPS - 1, Math.round(dim[i] * (DIM_STEPS - 1)));
-        const b = level * COLOR_STEPS + Math.min(COLOR_STEPS - 1, (heat[i] * COLOR_STEPS) | 0);
+        const b = Math.min(COLOR_STEPS - 1, (heat[i] * COLOR_STEPS) | 0);
         bucket[i] = b;
         bucketStart[b + 1]++;
-        drawn++;
       }
-      if (drawn === 0) return;
-      for (let b = 0; b < buckets; b++) {
+      for (let b = 0; b < COLOR_STEPS; b++) {
         bucketStart[b + 1] += bucketStart[b];
         bucketNext[b] = bucketStart[b];
       }
-      for (let i = 0; i < count; i++) {
-        if (i === hiddenIndex) continue;
-        order[bucketNext[bucket[i]]++] = i;
-      }
+      for (let i = 0; i < count; i++) order[bucketNext[bucket[i]]++] = i;
 
       const size = scale * dpr;
-      for (let b = 0; b < buckets; b++) {
+      for (let b = 0; b < COLOR_STEPS; b++) {
         const start = bucketStart[b];
         const end = bucketStart[b + 1];
         if (start === end) continue;
@@ -366,52 +297,6 @@ export function ChevronField({
         cancelAnimationFrame(frame);
         frame = 0;
       }
-    };
-
-    // API imperativa da coreografia de entrada. Tudo em px CSS da viewport.
-    handleRef.current = {
-      pick: ({ x, y, radius }) => {
-        if (count === 0) return null;
-        const rect = canvas.getBoundingClientRect();
-        const localX = x - rect.left;
-        const localY = y - rect.top;
-        const margin = scale * VIEWBOX_W;
-        let best = -1;
-        let bestDist = radius;
-        for (let i = 0; i < count; i++) {
-          const px = posX[i];
-          const py = posY[i];
-          // Longe da borda, senão o chevron nasceria cortado.
-          if (px < margin || py < margin || px > width - margin || py > height - margin) continue;
-          const d = Math.hypot(px - localX, py - localY);
-          if (d < bestDist) {
-            bestDist = d;
-            best = i;
-          }
-        }
-        if (best < 0) return null;
-        return {
-          index: best,
-          x: rect.left + posX[best],
-          y: rect.top + posY[best],
-          rotation: ((angle[best] - Math.PI / 2) * 180) / Math.PI,
-          size: scale * VIEWBOX_W,
-        };
-      },
-      focus: (index, options) => {
-        if (index < 0 || index >= count) return;
-        hiddenIndex = index;
-        focusCenter = { x: posX[index], y: posY[index], radius: options?.dimRadius ?? 260 };
-        if (!frame) draw();
-      },
-      release: () => {
-        hiddenIndex = -1;
-        focusCenter = null;
-        if (!frame) {
-          dim.fill(0);
-          draw();
-        }
-      },
     };
 
     // Quadro estático: campo sem cursor, sem dourado.
@@ -479,7 +364,6 @@ export function ChevronField({
     reducedMotion.addEventListener("change", onMotionChange);
 
     return () => {
-      handleRef.current = null;
       if (frame) cancelAnimationFrame(frame);
       if (hasIdleCallback) window.cancelIdleCallback(idleHandle);
       else clearTimeout(idleHandle);

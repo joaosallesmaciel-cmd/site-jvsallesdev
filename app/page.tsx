@@ -1,4 +1,5 @@
 import { Button } from "@/components/button";
+import { ChevronField } from "@/components/chevron-field";
 import { HeroIntro } from "@/components/hero-intro";
 import { Logo } from "@/components/Logo";
 import { Stat } from "@/components/stat";
@@ -6,6 +7,7 @@ import { Stat } from "@/components/stat";
 export default function Home() {
   return (
     <>
+      <ChevronField className="field-mask fixed inset-0 -z-10" />
       <HeroIntro />
 
       <div className="mx-auto flex min-h-dvh w-full max-w-[1200px] flex-col px-6 md:px-16">
