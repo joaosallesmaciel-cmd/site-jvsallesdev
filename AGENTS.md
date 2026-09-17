@@ -58,6 +58,11 @@ vai em @keyframes de CSS. CSS anima antes da hidratação; GSAP espera o
 JavaScript e atrasaria o LCP. As keyframes ficam no globals.css, nunca
 injetadas no componente.
 
+Exceção à exceção: coreografia cuja rota depende de geometria medida
+em tempo de execução (getBoundingClientRect, getScreenCTM) usa GSAP.
+@keyframes não calcula posição de destino. Mesmo nesses casos, o
+elemento que for o LCP nunca anima opacidade — só transform.
+
 Uma biblioteca de animação só. Não instale uma segunda.
 Se aparecer um caso que o GSAP não resolve, pare e pergunte antes de instalar.
 
