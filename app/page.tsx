@@ -1,26 +1,29 @@
 import { Button } from "@/components/button";
-import { ChevronField } from "@/components/chevron-field";
+import { HeroIntro } from "@/components/hero-intro";
 import { Logo } from "@/components/Logo";
 import { Stat } from "@/components/stat";
 
 export default function Home() {
   return (
     <>
-      <ChevronField className="fixed inset-0 -z-10" />
+      <HeroIntro />
 
       <div className="mx-auto flex min-h-dvh w-full max-w-[1200px] flex-col px-6 md:px-16">
         <header className="py-4 md:py-6">
-          <Logo height={28} />
+          <Logo height={28} intro />
         </header>
 
         <main className="flex flex-1 items-center py-4 md:py-12">
           <div className="grid w-full grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
             <div className="col-span-4 md:col-span-8 lg:col-span-7">
-              <h1 className="font-display text-[44px] leading-[44px] font-semibold tracking-[-0.03em] text-sand md:text-[72px] md:leading-[72px]">
+              <h1 data-intro="h1" className="font-display text-[44px] leading-[44px] font-semibold tracking-[-0.03em] text-sand md:text-[72px] md:leading-[72px]">
                 Processo manual custa caro. Eu automatizo o seu.
               </h1>
 
-              <p className="mt-6 max-w-[72ch] text-[18px] leading-[29px] text-muted">
+              <p
+                data-intro="support"
+                className="mt-6 max-w-[72ch] text-[18px] leading-[29px] text-muted"
+              >
                 Automatizo processos que travam sua empresa por dentro: financeiro, gestão,
                 controle e dados.
               </p>

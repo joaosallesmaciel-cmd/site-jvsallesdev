@@ -28,6 +28,14 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Sem JavaScript a coreografia nunca roda: o logo não pode ficar invisível. */
+@media (scripting: none) {
+  [data-intro-word],
+  [data-intro-chevron] {
+    opacity: 1 !important;
+  }
+}
+
 @keyframes jvs-chevron-in {
   from { transform: scaleY(0); opacity: 0; }
   to   { transform: scaleY(1); opacity: 1; }
