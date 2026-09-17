@@ -28,6 +28,40 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Máscara de legibilidade: o campo perde intensidade sob o texto do hero e
+   fica cheio nas bordas e no vazio à direita. Sai de graça no compositor. */
+.field-mask {
+  -webkit-mask-image: radial-gradient(
+    ellipse 78% 42% at 50% 46%,
+    transparent 0%,
+    rgba(0, 0, 0, 0.45) 55%,
+    #000 88%
+  );
+  mask-image: radial-gradient(
+    ellipse 78% 42% at 50% 46%,
+    transparent 0%,
+    rgba(0, 0, 0, 0.45) 55%,
+    #000 88%
+  );
+}
+
+@media (min-width: 768px) {
+  .field-mask {
+    -webkit-mask-image: radial-gradient(
+      ellipse 46% 52% at 27% 50%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 55%,
+      #000 85%
+    );
+    mask-image: radial-gradient(
+      ellipse 46% 52% at 27% 50%,
+      transparent 0%,
+      rgba(0, 0, 0, 0.4) 55%,
+      #000 85%
+    );
+  }
+}
+
 /* Sem JavaScript a coreografia nunca roda: o logo não pode ficar invisível. */
 @media (scripting: none) {
   [data-intro-word],

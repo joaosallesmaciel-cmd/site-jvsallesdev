@@ -14,6 +14,12 @@ const CENTER_Y = VIEWBOX_H / 2;
 // density 1 = maxParticles em 2560×1440. Telas menores recebem menos.
 const TARGET_AREA = 2560 * 1440;
 const MAX_DPR = 2;
+// Textura, não símbolo: opacidade do chevron em repouso e no pico do dourado.
+const REST_ALPHA = 0.25;
+const PEAK_ALPHA = 0.6;
+// Fração da célula ocupada pelo chevron, e folga extra entre células.
+const CHEVRON_FILL = 0.27;
+const SPACING_FACTOR = 1.3;
 const COLOR_STEPS = 32;
 // Níveis de escurecimento das vizinhas durante a coreografia de entrada.
 const DIM_STEPS = 4;
@@ -28,7 +34,6 @@ const SMALL_SCREEN_FACTOR = 0.75;
 // Valores de --line e --gold, usados se os tokens não estiverem no CSS.
 const FALLBACK_LINE = "#252a33";
 const FALLBACK_GOLD = "#e4b860";
-const FALLBACK_INK = "#0e1116";
 
 /** Uma partícula do campo, em px CSS da viewport. */
 export type PickedChevron = {
@@ -59,7 +64,7 @@ type ChevronFieldProps = {
   density?: number;
   /** Multiplicador da velocidade do campo de fluxo. */
   speed?: number;
-  /** Raio de influência do cursor, em px CSS. */
+  /** Raio de influência do cursor, em px CSS. A queda é cúbica: borda difusa. */
   influenceRadius?: number;
   className?: string;
 };
@@ -96,22 +101,20 @@ function parseHex(value: string, fallback: string) {
 }
 
 // Rampa de --line (repouso) a --gold (pico), repetida em DIM_STEPS níveis
-// de escurecimento em direção a --ink. Índice = nível * COLOR_STEPS + calor.
+// de escurecimento. A intensidade mora na opacidade: REST_ALPHA em repouso,
+// PEAK_ALPHA no pico. Índice = nível * COLOR_STEPS + calor.
 function buildRamp(el: Element) {
   const style = getComputedStyle(el);
   const line = parseHex(style.getPropertyValue("--line").trim(), FALLBACK_LINE);
   const gold = parseHex(style.getPropertyValue("--gold").trim(), FALLBACK_GOLD);
-  const ink = parseHex(style.getPropertyValue("--ink").trim(), FALLBACK_INK);
   const ramp: string[] = [];
   for (let level = 0; level < DIM_STEPS; level++) {
     const dim = (level / (DIM_STEPS - 1)) * DIM_MAX;
     for (let step = 0; step < COLOR_STEPS; step++) {
       const k = step / (COLOR_STEPS - 1);
-      const [r, g, b] = line.map((c, i) => {
-        const heated = c + (gold[i] - c) * k;
-        return Math.round(heated + (ink[i] - heated) * dim);
-      });
-      ramp.push(`rgb(${r} ${g} ${b})`);
+      const [r, g, b] = line.map((c, i) => Math.round(c + (gold[i] - c) * k));
+      const alpha = (REST_ALPHA + (PEAK_ALPHA - REST_ALPHA) * k) * (1 - dim);
+      ramp.push(`rgb(${r} ${g} ${b} / ${alpha.toFixed(3)})`);
     }
   }
   return ramp;
@@ -122,7 +125,7 @@ export function ChevronField({
   maxParticles = 3000,
   density = 1,
   speed = 1,
-  influenceRadius = 180,
+  influenceRadius = 280,
   className,
 }: ChevronFieldProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -196,7 +199,8 @@ export function ChevronField({
                 density *
                 Math.min(1, area / TARGET_AREA) *
                 screenFactor *
-                cpuFactor(),
+                cpuFactor() /
+                (SPACING_FACTOR * SPACING_FACTOR),
             )
           : 0;
       posX = new Float32Array(count);
@@ -225,7 +229,7 @@ export function ChevronField({
           posY[i] = (Math.floor(cell / cols) + 0.2 + Math.random() * 0.6) * cellH;
           angle[i] = flow(posX[i], posY[i], time);
         }
-        scale = (Math.min(cellW, cellH) * 0.5) / VIEWBOX_W;
+        scale = (Math.min(cellW, cellH) * CHEVRON_FILL) / VIEWBOX_W;
       }
 
       draw();
@@ -252,7 +256,7 @@ export function ChevronField({
       const moveAmount = Math.min(1, Math.hypot(pointer.vx, pointer.vy) / 600);
       const turnK = 1 - Math.exp(-dt * 5);
       const riseK = 1 - Math.exp(-dt * 14);
-      const fallK = 1 - Math.exp(-dt * 2.5);
+      const fallK = 1 - Math.exp(-dt * 1.8);
       const dimK = 1 - Math.exp(-dt * 8);
 
       for (let i = 0; i < count; i++) {
@@ -267,8 +271,9 @@ export function ChevronField({
           if (dx < radius && dx > -radius && dy < radius && dy > -radius) {
             const d2 = dx * dx + dy * dy;
             if (d2 < radius2) {
+              // Queda cúbica: núcleo pequeno e borda difusa, em vez de mancha.
               const f = 1 - Math.sqrt(d2) / radius;
-              near = f * f * (3 - 2 * f);
+              near = f * f * f;
             }
           }
         }

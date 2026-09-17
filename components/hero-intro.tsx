@@ -4,9 +4,6 @@ import { useRef } from "react";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";
 import { CustomEase } from "gsap/CustomEase";
-import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
 import {
   CHEVRON_PATH,
   ChevronField,
@@ -15,10 +12,13 @@ import {
   type ChevronFieldHandle,
 } from "@/components/chevron-field";
 
-gsap.registerPlugin(useGSAP, ScrollTrigger, SplitText, DrawSVGPlugin, CustomEase);
+// Só o que esta coreografia usa. Plugin não usado é peso para todo visitante.
+gsap.registerPlugin(useGSAP, CustomEase);
 // Easing padrão do AGENTS.md: cubic-bezier(0.2,0.8,0.2,1).
 CustomEase.create("jvs", "M0,0 C0.2,0.8 0.2,1 1,1");
 
+// Mesma opacidade de repouso do campo, para o viajante nascer sem aparecer.
+const REST_ALPHA = 0.25;
 // A coreografia espera no máximo isso pelo campo começar a rodar.
 const FIELD_WAIT = 2000;
 // Região onde o chevron viajante é escolhido: centro-alto da tela.
@@ -81,14 +81,16 @@ export function HeroIntro() {
           y: from.y,
           rotation: from.rotation,
           scale: from.size / VIEWBOX_W,
-          opacity: 1,
+          // Nasce com a mesma presença de uma partícula em repouso.
+          opacity: REST_ALPHA,
         });
 
         const tl = gsap.timeline({ defaults: { ease: "jvs" } });
         timeline = tl;
 
         // 1. Acende em --gold enquanto as vizinhas escurecem.
-        tl.to(flyerPath, { fill: gold, duration: 0.3 });
+        tl.to(flyerPath, { fill: gold, duration: 0.5 });
+        tl.to(flyer, { opacity: 1, duration: 0.5 }, "<");
 
         // 2. Viaja até o lugar do "v", girando para a vertical.
         tl.to(flyer, {
@@ -96,7 +98,7 @@ export function HeroIntro() {
           y: to.y,
           rotation: "0_short",
           scale: to.scale,
-          duration: 0.7,
+          duration: 1.1,
         });
 
         // 3. Trava: o chevron do logo assume no mesmo quadro.
@@ -154,7 +156,7 @@ export function HeroIntro() {
 
   return (
     <>
-      <ChevronField ref={fieldRef} className="fixed inset-0 -z-10" />
+      <ChevronField ref={fieldRef} className="field-mask fixed inset-0 -z-10" />
 
       <div
         ref={flyerRef}
