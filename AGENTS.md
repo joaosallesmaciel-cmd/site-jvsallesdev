@@ -53,7 +53,7 @@ Lenis para scroll suave.
 Hover, foco e mudança de estado: transition do CSS, sem biblioteca.
 Easing padrão cubic-bezier(0.2,0.8,0.2,1). Duração 400–700ms.
 Nada acima de 1s, exceto o campo generativo, que é contínuo, e a
-coreografia de entrada do hero, que vai até 2,4s no total.
+coreografia de entrada do hero, que vai até 1,4s no total.
 Toda animação precisa de caminho alternativo em prefers-reduced-motion: reduce.
 Sem exceção — vale para GSAP, Lenis, transition de CSS e o campo generativo.
 
