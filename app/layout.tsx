@@ -2,17 +2,22 @@ import type { Metadata } from "next";
 import { Inter, JetBrains_Mono, Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
+// O h1 é o LCP e usa só o peso 600. É a única fonte pré-carregada:
+// preload em todas faria as três competirem pela mesma banda.
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  weight: ["300", "500", "600"],
+  weight: ["600"],
   display: "swap",
+  preload: true,
   variable: "--font-space-grotesk",
 });
 
+// 400 no corpo, 500 nos botões. O 600 não é usado em lugar nenhum.
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["400", "500"],
   display: "swap",
+  preload: false,
   variable: "--font-inter",
 });
 
@@ -20,6 +25,7 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["500"],
   display: "swap",
+  preload: false,
   variable: "--font-jetbrains-mono",
 });
 
