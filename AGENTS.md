@@ -57,6 +57,11 @@ Hover, foco e mudança de estado: transition do CSS, sem biblioteca.
 Easing padrão cubic-bezier(0.2,0.8,0.2,1). Duração 400–700ms.
 Nada acima de 1s, exceto o campo generativo, que é contínuo, e a
 coreografia de entrada do hero, que vai até 1,4s no total.
+
+Exceção: o cartão ilustrativo do hero é uma sequência própria, que só
+começa depois da coreografia do logo. Vai até 2,6s no total, com cada
+passo individual respeitando o teto de 700ms. Ele não bloqueia a
+leitura do h1, que já está legível quando o cartão começa.
 Toda animação precisa de caminho alternativo em prefers-reduced-motion: reduce.
 Sem exceção — vale para GSAP, Lenis, transition de CSS e o campo generativo.
 
