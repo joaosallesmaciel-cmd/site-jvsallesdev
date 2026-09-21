@@ -10,6 +10,9 @@ raio ou biblioteca fora do que está aqui. Em dúvida, pergunte.
 ## Tokens
 --ink:#0E1116  --surface:#171B22  --line:#252A33
 --gold:#E4B860 --sand:#F5F2EC     --muted:#8A929E
+--surface-2:#1E222A — só para estado de hover de superfície elevada.
+Um degrau acima de --surface, no meio do caminho até --line. Não use
+como fundo em repouso: em repouso a superfície é --surface.
 O fundo domina. Dourado é o que o olho procura — pode virar área,
 brilho e gradiente, mas não espalhe: se está em tudo, não destaca nada.
 
@@ -107,3 +110,8 @@ Nunca: "solução inovadora", "revolucionar", "transformação digital",
 
 ## Meta de entrega
 Lighthouse ≥ 90 em Performance, Acessibilidade e SEO. LCP abaixo de 2,5s.
+
+Toda medição de Lighthouse roda contra o build de produção, com o
+dev server parado. Cinco execuções no mínimo; reporte todas e a
+mediana. Comparação entre versões só vale se as duas foram medidas
+nas mesmas condições.
