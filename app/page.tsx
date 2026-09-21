@@ -1,5 +1,8 @@
+import type { CSSProperties } from "react";
+
 // Ícone por ícone, nunca a biblioteca inteira.
 import {
+  CircleCheck,
   Database,
   EyeOff,
   LayoutDashboard,
@@ -125,6 +128,14 @@ const menu = [
   { href: "#contato", label: "Contato" },
 ];
 
+// Ilustração do hero: um processo rodando, não uma promessa. O número
+// da segunda linha é o que o olho precisa pegar.
+const conciliacao = [
+  { destaque: null, texto: "Extrato de agosto importado · 214 lançamentos" },
+  { destaque: "3", texto: " cobranças duplicadas encontradas" },
+  { destaque: null, texto: "Relatório enviado ao financeiro" },
+];
+
 // A seta carrega o sentido da frase, então não leva aria-hidden:
 // sem ela o leitor de tela perde o "então".
 const passagem = [
@@ -202,6 +213,36 @@ export default function Home() {
                     Ver o que eu faço →
                   </Button>
                 </div>
+              </div>
+
+              {/* Só a partir de 1024px: no celular o hero precisa continuar
+                  cabendo em 844px de altura. self-start alinha o topo do
+                  cartão com o topo do h1, sem esticar. */}
+              <div className="hidden border border-line bg-surface p-6 lg:col-span-5 lg:col-start-8 lg:block lg:self-start">
+                <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
+                  Exemplo · Conciliação
+                </p>
+
+                <ul className="mt-6 space-y-4">
+                  {conciliacao.map(({ destaque, texto }, i) => (
+                    <li
+                      key={texto}
+                      className="jvs-linha flex items-start gap-4 text-[15px] leading-[24px] text-sand"
+                      style={{ "--i": i } as CSSProperties}
+                    >
+                      <CircleCheck
+                        aria-hidden="true"
+                        size={24}
+                        strokeWidth={1.5}
+                        className="shrink-0 text-gold"
+                      />
+                      <span>
+                        {destaque && <span className="text-gold">{destaque}</span>}
+                        {texto}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </div>
 
               <div className="col-span-4 border-t border-line pt-6 md:col-span-8 lg:col-span-12">
