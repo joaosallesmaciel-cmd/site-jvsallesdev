@@ -270,44 +270,46 @@ export default function Home() {
         </header>
 
         <article className="mt-12 border-t border-line pt-6">
-          {/* No celular a meta fica logo abaixo do nome; no desktop sobe para a
-              direita, na mesma linha do h3. Um elemento só, sem duplicar. */}
+          {/* Nome, descritor e meta numa linha só. No celular a meta cai
+              para baixo do descritor; no desktop vai para a direita. */}
           <div className="grid grid-cols-4 gap-x-6 gap-y-4 md:grid-cols-8 lg:grid-cols-12">
-            <h3 className="col-span-4 font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand md:col-span-8 lg:col-span-6">
-              Aexum
-            </h3>
-            <p className="col-span-4 self-center font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase md:col-span-8 lg:col-span-6 lg:text-right">
+            <div className="col-span-4 md:col-span-8 lg:col-span-8">
+              <h3 className="font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand">
+                Aexum
+              </h3>
+              <p className="mt-2 max-w-[72ch] text-[18px] leading-[29px] text-muted">
+                {aexum.descritor}
+              </p>
+            </div>
+            <p className="col-span-4 font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase md:col-span-8 lg:col-span-4 lg:text-right">
               {aexum.meta}
-            </p>
-            <p className="col-span-4 max-w-[72ch] text-[18px] leading-[29px] text-muted md:col-span-8 lg:col-span-6">
-              {aexum.descritor}
             </p>
           </div>
 
-          <div className="mt-12">
-            <h4 className="font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand">
-              Da mensagem no WhatsApp até o registro no painel.
-            </h4>
-            {/* Grade de fios: o container é --line e o vão de 1px deixa o
-                fundo aparecer entre os cartões. Raio 0, sem sombra.
-                Uma coluna ou cinco, nunca um número que deixe célula vazia. */}
-            <ol className="mt-6 grid grid-cols-1 gap-px border border-line bg-line lg:grid-cols-5">
-              {etapas.map((etapa) => (
-                <FlowStep key={etapa.numero} {...etapa} />
-              ))}
-            </ol>
+          {/* Grade de fios: o container é --line e o vão de 1px deixa o
+              fundo aparecer entre as células. Raio 0, sem sombra.
+              Uma coluna ou cinco, nunca um número que deixe célula vazia.
+              A regra de passagem é a sexta célula, de largura inteira. */}
+          <ol className="mt-6 grid grid-cols-1 gap-px border border-line bg-line lg:grid-cols-5">
+            {etapas.map((etapa) => (
+              <FlowStep key={etapa.numero} {...etapa} />
+            ))}
 
-            <div className="mt-6">
-              <UserRound
-                aria-hidden="true"
-                size={24}
-                strokeWidth={1.5}
-                className="text-gold"
-              />
-              <p className="mt-4 font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
+            <li className="flex flex-col gap-4 bg-surface p-6 lg:col-span-5 lg:p-4 xl:p-6">
+              <div className="flex h-12 w-12 items-center justify-center border border-line">
+                <UserRound
+                  aria-hidden="true"
+                  size={24}
+                  strokeWidth={1.5}
+                  className="text-gold"
+                />
+              </div>
+
+              <h4 className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
                 Quando passa para uma pessoa
-              </p>
-              <ul className="mt-4 space-y-4">
+              </h4>
+
+              <ul className="grid gap-4 lg:grid-cols-2">
                 {passagem.map(({ condicao, acao }) => (
                   <li
                     key={condicao}
@@ -317,8 +319,8 @@ export default function Home() {
                   </li>
                 ))}
               </ul>
-            </div>
-          </div>
+            </li>
+          </ol>
         </article>
       </section>
 
