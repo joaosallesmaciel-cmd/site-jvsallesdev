@@ -100,11 +100,30 @@ const etapas = [
   },
 ];
 
+// O mesmo link da chamada final, com a mensagem já preenchida.
+const WHATSAPP =
+  "https://wa.me/5563992300944?text=Ol%C3%A1%2C%20Jo%C3%A3o.%20Quero%20falar%20sobre%20um%20processo%20da%20minha%20empresa.";
+
 // Hover e foco com transition do CSS, como manda o AGENTS.md.
-const linkRodape =
+const link =
   "text-[15px] leading-[24px] text-muted transition-colors duration-[400ms] " +
   "ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none hover:text-sand " +
+  "focus-visible:text-sand focus-visible:outline-2 focus-visible:outline-offset-2 " +
+  "focus-visible:outline-gold";
+
+// Fica acima da viewport até receber foco. Não é display:none: precisa
+// continuar na ordem de tabulação e ser anunciado pelo leitor de tela.
+const pular =
+  "absolute top-2 left-6 z-10 -translate-y-[200%] bg-ink px-4 py-2 text-[15px] " +
+  "leading-[24px] text-sand transition-transform duration-[400ms] " +
+  "ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none focus:translate-y-0 " +
   "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold";
+
+const menu = [
+  { href: "#servicos", label: "Serviços" },
+  { href: "#portfolio", label: "Portfólio" },
+  { href: "#contato", label: "Contato" },
+];
 
 // A seta carrega o sentido da frase, então não leva aria-hidden:
 // sem ela o leitor de tela perde o "então".
@@ -118,16 +137,45 @@ export default function Home() {
     <>
       <HeroIntro />
 
+      {/* Fundo sólido e z-50: o campo de chevrons passa por baixo sem
+          borrar nada. Sem blur, sem sombra. */}
+      <header className="sticky top-0 z-50 h-[var(--header-h)] border-b border-line bg-ink">
+        <a className={pular} href="#conteudo">
+          Pular para o conteúdo
+        </a>
+
+        <div className="mx-auto flex h-full w-full max-w-[1200px] items-center justify-between gap-6 px-6 md:px-16">
+          {/* O mesmo logo de antes, movido do hero: a coreografia acha
+              os alvos pelo documento inteiro, então segue funcionando. */}
+          <Logo height={28} intro />
+
+          <div className="flex items-center gap-8">
+            <nav aria-label="Seções" className="hidden items-center gap-8 md:flex">
+              {menu.map(({ href, label }) => (
+                <a key={href} className={link} href={href}>
+                  {label}
+                </a>
+              ))}
+            </nav>
+
+            <Button
+              href={WHATSAPP}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2"
+            >
+              Falar comigo
+            </Button>
+          </div>
+        </div>
+      </header>
+
       {/* O campo cobre só o hero: preso a este bloco, não à viewport. */}
       <div className="relative">
         <ChevronField className="field-mask absolute inset-0 -z-10" />
 
-        <div className="mx-auto flex min-h-dvh w-full max-w-[1200px] flex-col px-6 md:px-16">
-          <header className="py-4 md:py-6">
-            <Logo height={28} intro />
-          </header>
-
-          <main className="flex flex-1 items-center py-4 md:py-12">
+        <div className="mx-auto flex min-h-[calc(100dvh-var(--header-h))] w-full max-w-[1200px] flex-col px-6 md:px-16">
+          <main id="conteudo" className="flex flex-1 items-center py-4 md:py-12">
             <div className="grid w-full grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
               <div className="col-span-4 md:col-span-8 lg:col-span-7">
                 <h1 data-intro="h1" className="font-display text-[44px] leading-[44px] font-semibold tracking-[-0.03em] text-sand md:text-[72px] md:leading-[72px]">
@@ -184,7 +232,7 @@ export default function Home() {
 
       <section
         id="servicos"
-        className="mx-auto w-full max-w-[1200px] scroll-mt-24 px-6 pt-24 pb-12 md:px-16"
+        className="mx-auto w-full max-w-[1200px] scroll-mt-[calc(var(--header-h)+24px)] px-6 pt-24 pb-12 md:px-16"
       >
         <header className="mb-12">
           <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
@@ -206,7 +254,7 @@ export default function Home() {
 
       <section
         id="portfolio"
-        className="mx-auto w-full max-w-[1200px] scroll-mt-24 px-6 pt-12 pb-24 md:px-16"
+        className="mx-auto w-full max-w-[1200px] scroll-mt-[calc(var(--header-h)+24px)] px-6 pt-12 pb-24 md:px-16"
       >
         <header>
           <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
@@ -276,7 +324,7 @@ export default function Home() {
 
       {/* A faixa em --surface vai de borda a borda: é a troca de fundo,
           não uma borda, que separa a chamada final do texto acima. */}
-      <section id="contato" className="scroll-mt-24 bg-surface">
+      <section id="contato" className="scroll-mt-[calc(var(--header-h)+24px)] bg-surface">
         <div className="mx-auto w-full max-w-[1200px] px-6 py-24 md:px-16">
           <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12">
             <div className="col-span-4 flex flex-col items-center text-center md:col-span-8 lg:col-span-8 lg:col-start-3">
@@ -322,10 +370,10 @@ export default function Home() {
             </div>
 
             <div className="col-span-4 flex flex-col gap-2 md:col-span-8 lg:col-span-6 lg:items-end">
-              <a className={linkRodape} href="tel:+5563992300944">
+              <a className={link} href="tel:+5563992300944">
                 (63) 99230-0944
               </a>
-              <a className={linkRodape} href="mailto:joaosallesmaciel@gmail.com">
+              <a className={link} href="mailto:joaosallesmaciel@gmail.com">
                 joaosallesmaciel@gmail.com
               </a>
             </div>

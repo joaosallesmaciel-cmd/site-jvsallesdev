@@ -1,6 +1,10 @@
 @import "tailwindcss";
 
 :root {
+  /* Altura do cabeçalho fixo. Amarra três coisas: a altura do próprio
+     cabeçalho, o min-height do hero e o scroll-margin das seções. */
+  --header-h: 64px;
+
   --ink: #0e1116;
   --surface: #171b22;
   --line: #252a33;
