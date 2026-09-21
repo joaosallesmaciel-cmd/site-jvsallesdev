@@ -243,11 +243,11 @@ export default function Home() {
           </h2>
         </header>
 
-        <div className="grid grid-cols-4 gap-x-6 gap-y-12 md:grid-cols-8 lg:grid-cols-12">
+        {/* Mesma grade de fios do diagrama: o fio divisor é o fundo
+            --line aparecendo pelo vão de 1px entre os cartões. */}
+        <div className="grid grid-cols-1 gap-px border border-line bg-line md:grid-cols-2">
           {servicos.map((servico) => (
-            <div key={servico.title} className="col-span-4 md:col-span-8 lg:col-span-6">
-              <Service {...servico} />
-            </div>
+            <Service key={servico.title} {...servico} />
           ))}
         </div>
       </section>

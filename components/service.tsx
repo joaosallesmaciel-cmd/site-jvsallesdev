@@ -11,12 +11,23 @@ type ServiceProps = {
   delivery: string;
 };
 
+// O cartão não é clicável: o hover é só leitura, sem cursor e sem link.
+const transicao =
+  "transition-colors duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] " +
+  "motion-reduce:transition-none";
+
 export function Service({ icon: Icon, title, cost, delivery }: ServiceProps) {
   return (
-    <div className="border-t border-line pt-6">
-      <Icon aria-hidden="true" size={24} strokeWidth={1.5} className="text-gold" />
+    <div
+      className={`group bg-surface p-6 hover:bg-surface-2 focus-within:bg-surface-2 lg:p-12 ${transicao}`}
+    >
+      <div
+        className={`flex h-12 w-12 items-center justify-center border border-line group-hover:border-gold group-focus-within:border-gold ${transicao}`}
+      >
+        <Icon aria-hidden="true" size={24} strokeWidth={1.5} className="text-gold" />
+      </div>
 
-      <h3 className="mt-4 font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand">
+      <h3 className="mt-6 font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand">
         {title}
       </h3>
 

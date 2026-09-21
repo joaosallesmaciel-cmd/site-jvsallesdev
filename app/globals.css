@@ -7,6 +7,9 @@
 
   --ink: #0e1116;
   --surface: #171b22;
+  /* Um degrau acima de --surface, no meio do caminho até --line.
+     É o estado de hover dos cartões; o fio divisor continua mais claro. */
+  --surface-2: #1e222a;
   --line: #252a33;
   --gold: #e4b860;
   --sand: #f5f2ec;
@@ -16,6 +19,7 @@
 @theme inline {
   --color-ink: var(--ink);
   --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
   --color-line: var(--line);
   --color-gold: var(--gold);
   --color-sand: var(--sand);
