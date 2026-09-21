@@ -20,6 +20,7 @@ import { ChevronField } from "@/components/chevron-field";
 import { FlowStep } from "@/components/flow-step";
 import { HeroIntro } from "@/components/hero-intro";
 import { Logo } from "@/components/Logo";
+import { Reveal } from "@/components/reveal";
 import { Service } from "@/components/service";
 import { Stat } from "@/components/stat";
 
@@ -108,8 +109,11 @@ const WHATSAPP =
   "https://wa.me/5563992300944?text=Ol%C3%A1%2C%20Jo%C3%A3o.%20Quero%20falar%20sobre%20um%20processo%20da%20minha%20empresa.";
 
 // Hover e foco com transition do CSS, como manda o AGENTS.md.
+// transition-[color] e não transition-colors: o transition-colors do
+// Tailwind v4 inclui outline-color, e o contorno de foco ficaria
+// esmaecendo por 400ms em vez de aparecer na hora.
 const link =
-  "text-[15px] leading-[24px] text-muted transition-colors duration-[400ms] " +
+  "text-[15px] leading-[24px] text-muted transition-[color] duration-[400ms] " +
   "ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none hover:text-sand " +
   "focus-visible:text-sand focus-visible:outline-2 focus-visible:outline-offset-2 " +
   "focus-visible:outline-gold";
@@ -147,6 +151,7 @@ export default function Home() {
   return (
     <>
       <HeroIntro />
+      <Reveal />
 
       {/* Fundo sólido e z-50: o campo de chevrons passa por baixo sem
           borrar nada. Sem blur, sem sombra. */}
@@ -163,7 +168,7 @@ export default function Home() {
           <div className="flex items-center gap-8">
             <nav aria-label="Seções" className="hidden items-center gap-8 md:flex">
               {menu.map(({ href, label }) => (
-                <a key={href} className={link} href={href}>
+                <a key={href} className={`link-menu ${link}`} href={href}>
                   {label}
                 </a>
               ))}
@@ -210,7 +215,13 @@ export default function Home() {
                     Falar sobre seu processo
                   </Button>
                   <Button variant="tertiary" href="#servicos">
-                    Ver o que eu faço →
+                    Ver o que eu faço{" "}
+                    <span
+                      aria-hidden="true"
+                      className="inline-block transition-transform duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] group-hover:translate-x-1 motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+                    >
+                      →
+                    </span>
                   </Button>
                 </div>
               </div>
@@ -275,7 +286,7 @@ export default function Home() {
         id="servicos"
         className="mx-auto w-full max-w-[1200px] scroll-mt-[calc(var(--header-h)+24px)] px-6 pt-24 pb-12 md:px-16"
       >
-        <header className="mb-12">
+        <header data-reveal className="mb-12">
           <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
             Onde o processo trava
           </p>
@@ -287,8 +298,8 @@ export default function Home() {
         {/* Mesma grade de fios do diagrama: o fio divisor é o fundo
             --line aparecendo pelo vão de 1px entre os cartões. */}
         <div className="grid grid-cols-1 gap-px border border-line bg-line md:grid-cols-2">
-          {servicos.map((servico) => (
-            <Service key={servico.title} {...servico} />
+          {servicos.map((servico, i) => (
+            <Service key={servico.title} {...servico} atraso={i * 80} />
           ))}
         </div>
       </section>
@@ -297,7 +308,7 @@ export default function Home() {
         id="portfolio"
         className="mx-auto w-full max-w-[1200px] scroll-mt-[calc(var(--header-h)+24px)] px-6 pt-12 pb-24 md:px-16"
       >
-        <header>
+        <header data-reveal>
           <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
             O que eu já construí
           </p>
@@ -313,7 +324,10 @@ export default function Home() {
         <article className="mt-12 border-t border-line pt-6">
           {/* Nome, descritor e meta numa linha só. No celular a meta cai
               para baixo do descritor; no desktop vai para a direita. */}
-          <div className="grid grid-cols-4 gap-x-6 gap-y-4 md:grid-cols-8 lg:grid-cols-12">
+          <div
+            data-reveal
+            className="grid grid-cols-4 gap-x-6 gap-y-4 md:grid-cols-8 lg:grid-cols-12"
+          >
             <div className="col-span-4 md:col-span-8 lg:col-span-8">
               <h3 className="font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand">
                 Aexum
@@ -332,11 +346,15 @@ export default function Home() {
               Uma coluna ou cinco, nunca um número que deixe célula vazia.
               A regra de passagem é a sexta célula, de largura inteira. */}
           <ol className="mt-6 grid grid-cols-1 gap-px border border-line bg-line lg:grid-cols-5">
-            {etapas.map((etapa) => (
-              <FlowStep key={etapa.numero} {...etapa} />
+            {etapas.map((etapa, i) => (
+              <FlowStep key={etapa.numero} {...etapa} atraso={i * 80} />
             ))}
 
-            <li className="flex flex-col gap-4 bg-surface p-6 lg:col-span-5 lg:p-4 xl:p-6">
+            <li
+              data-reveal
+              style={{ transitionDelay: "400ms" }}
+              className="flex flex-col gap-4 bg-surface p-6 lg:col-span-5 lg:p-4 xl:p-6"
+            >
               <div className="flex h-12 w-12 items-center justify-center border border-line">
                 <UserRound
                   aria-hidden="true"
@@ -370,7 +388,10 @@ export default function Home() {
       <section id="contato" className="scroll-mt-[calc(var(--header-h)+24px)] bg-surface">
         <div className="mx-auto w-full max-w-[1200px] px-6 py-24 md:px-16">
           <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12">
-            <div className="col-span-4 flex flex-col items-center text-center md:col-span-8 lg:col-span-8 lg:col-start-3">
+            <div
+              data-reveal
+              className="col-span-4 flex flex-col items-center text-center md:col-span-8 lg:col-span-8 lg:col-start-3"
+            >
               <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
                 Próximo passo
               </p>

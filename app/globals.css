@@ -79,6 +79,74 @@ body {
   }
 }
 
+/* Foco visível igual em toda a página: 2px em --gold, 2px afastado. */
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+/* Revelação ao rolar. O estado escondido depende de .js-reveal, posta
+   no <html> por um script inline antes da primeira pintura. Sem
+   JavaScript a regra inteira não casa e tudo aparece.
+   Só opacity e transform: nada de layout, nada de CLS. */
+.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  /* background-color entra na lista porque esta regra vence a classe
+     transition-colors do cartão de serviço: sem ela, o hover do cartão
+     passaria a saltar em vez de esmaecer. */
+  transition:
+    opacity 600ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    transform 600ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    background-color 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.js-reveal [data-reveal][data-revealed] {
+  opacity: 1;
+  transform: none;
+}
+
+/* Sem movimento: nada escondido, nada anima, nem o atraso do
+   escalonamento tem efeito. */
+@media (prefers-reduced-motion: reduce) {
+  .js-reveal [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* Sublinhado do menu: 1px em --gold crescendo da esquerda para a
+   direita. Em pseudo-elemento absoluto, então não mexe no layout. */
+.link-menu {
+  position: relative;
+}
+
+.link-menu::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: -4px;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 400ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.link-menu:hover::after,
+.link-menu:focus-visible::after {
+  transform: scaleX(1);
+}
+
+/* O sublinhado continua aparecendo; só deixa de crescer. */
+@media (prefers-reduced-motion: reduce) {
+  .link-menu::after {
+    transition: none;
+  }
+}
+
 /* Cartão do hero. As três linhas entram uma a uma depois que a
    coreografia do logo termina, por volta de 1,4s. É @keyframes e não
    GSAP porque roda uma vez, acima da dobra, e não mede geometria.

@@ -12,12 +12,18 @@ type ButtonProps = {
 };
 
 const base =
-  "inline-flex items-center justify-center rounded-[2px] px-6 py-4 text-[15px] leading-[24px] font-medium " +
-  "transition-colors duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none " +
-  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold";
+  "group inline-flex items-center justify-center rounded-[2px] px-6 py-4 text-[15px] leading-[24px] font-medium " +
+  // translate, não transform: o Tailwind v4 escreve na propriedade
+  // translate, e transform sozinho não transiciona o deslocamento.
+  "transition-[color,background-color,translate] duration-[400ms] ease-[cubic-bezier(0.2,0.8,0.2,1)] " +
+  // Movimento reduzido mantém a cor e descarta o deslocamento.
+  "motion-reduce:transition-[color,background-color]";
 
 const variants = {
-  primary: "bg-gold text-ink hover:bg-sand",
+  // Sobe 1px no hover e assenta de volta no clique.
+  primary:
+    "bg-gold text-ink hover:bg-sand hover:-translate-y-px active:translate-y-0 " +
+    "motion-reduce:hover:translate-y-0",
   tertiary: "text-muted hover:text-sand",
 };
 

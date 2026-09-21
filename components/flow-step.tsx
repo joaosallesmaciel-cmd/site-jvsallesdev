@@ -13,6 +13,8 @@ type FlowStepProps = {
   descricao: string;
   /** Tecnologias. */
   chips: string[];
+  /** Atraso do escalonamento na revelação, em ms. */
+  atraso?: number;
 };
 
 export function FlowStep({
@@ -22,9 +24,14 @@ export function FlowStep({
   rotulo,
   descricao,
   chips,
+  atraso = 0,
 }: FlowStepProps) {
   return (
-    <li className="flex flex-col gap-4 bg-surface p-6 lg:p-4 xl:p-6">
+    <li
+      data-reveal
+      style={{ transitionDelay: `${atraso}ms` }}
+      className="flex flex-col gap-4 bg-surface p-6 lg:p-4 xl:p-6"
+    >
       <div className="flex items-center justify-between gap-4">
         <span className="font-mono text-[32px] leading-[37px] font-medium text-muted">
           {numero}

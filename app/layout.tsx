@@ -55,6 +55,16 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${spaceGrotesk.variable} ${spaceGroteskMedium.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
+      <head>
+        {/* Roda antes da primeira pintura. É esta classe, e só ela, que
+            autoriza o CSS a esconder o conteúdo revelável. Sem
+            JavaScript ela nunca aparece e a página inteira é visível. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.documentElement.classList.add("js-reveal")`,
+          }}
+        />
+      </head>
       <body>{children}</body>
     </html>
   );
