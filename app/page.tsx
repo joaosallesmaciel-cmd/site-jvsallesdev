@@ -1,3 +1,17 @@
+// Ícone por ícone, nunca a biblioteca inteira.
+import {
+  Database,
+  EyeOff,
+  LayoutDashboard,
+  MessageCircle,
+  MessageSquareText,
+  Repeat,
+  TrendingDown,
+  Unlink,
+  UserRound,
+  Workflow,
+} from "lucide-react";
+
 import { Button } from "@/components/button";
 import { ChevronField } from "@/components/chevron-field";
 import { FlowStep } from "@/components/flow-step";
@@ -8,28 +22,28 @@ import { Stat } from "@/components/stat";
 
 const servicos = [
   {
+    icon: TrendingDown,
     title: "Dinheiro vazando sem ninguém ver",
-    cost: "Cobrança duplicada, assinatura esquecida, fornecedor que subiu preço sem avisar, pagamento sem nota. Some no meio de centenas de lançamentos e ninguém tem tempo de conferir.",
-    delivery:
-      "Sistema que cruza extrato, notas e contas, e entrega um relatório com cada furo, o valor e a evidência.",
+    cost: "Cobrança duplicada e pagamento sem nota somem entre centenas de lançamentos.",
+    delivery: "Relatório com cada furo, o valor e a prova.",
   },
   {
+    icon: EyeOff,
     title: "Decisão tomada no escuro",
-    cost: "Você sabe quanto entrou, mas não sabe de onde nem por quê. O relatório chega quando o mês já acabou e a decisão já foi tomada.",
-    delivery:
-      "Painel que consolida as fontes que você já usa e mostra o número atualizado, sem alguém montando planilha toda segunda.",
+    cost: "O relatório chega quando a decisão já foi tomada.",
+    delivery: "Painel com o número atualizado, sem planilha manual.",
   },
   {
+    icon: Unlink,
     title: "Dado que some entre sistemas",
-    cost: "O que está no ERP não bate com a planilha, que não bate com o que o vendedor anotou. Cada troca de sistema é uma chance de perder informação.",
-    delivery:
-      "Integração entre o que você já tem, com o dado entrando uma vez e aparecendo em todo lugar.",
+    cost: "ERP, planilha e vendedor contam três versões diferentes.",
+    delivery: "O dado entra uma vez e aparece em todo lugar.",
   },
   {
-    title: "Trabalho que existe só porque ninguém automatizou",
-    cost: "Copiar de um sistema para outro, conferir documento linha a linha, montar o mesmo relatório todo mês. Trabalho que ocupa gente boa e não produz nada.",
-    delivery:
-      "Automação do processo inteiro, com a pessoa entrando só onde precisa de julgamento.",
+    icon: Repeat,
+    title: "Trabalho que ninguém automatizou",
+    cost: "Copiar, conferir e montar o mesmo relatório todo mês.",
+    delivery: "Automação do processo, com a pessoa só onde precisa julgar.",
   },
 ];
 
@@ -46,43 +60,43 @@ const aexum = {
 const etapas = [
   {
     numero: "01",
+    icon: MessageCircle,
     titulo: "WhatsApp",
     rotulo: "Entrada",
-    descricao:
-      "O cliente manda mensagem no número que a empresa já usa. Nada muda para ele.",
-    chips: ["z-api", "webhook"],
+    descricao: "O cliente escreve no número de sempre.",
+    chips: ["Z-API"],
   },
   {
     numero: "02",
+    icon: Workflow,
     titulo: "Orquestração",
     rotulo: "n8n",
-    descricao:
-      "Identifica de quem é a conversa, junta o histórico e decide o caminho: responder, agendar ou chamar uma pessoa.",
-    chips: ["n8n", "google calendar"],
+    descricao: "Decide: responder, agendar ou chamar alguém.",
+    chips: ["n8n", "Google Calendar"],
   },
   {
     numero: "03",
+    icon: MessageSquareText,
     titulo: "Agente de IA",
     rotulo: "Camada de resposta",
-    descricao:
-      "Entende o pedido, consulta o material da empresa e escreve a resposta. Se não encontra no material, não inventa.",
-    chips: ["claude", "gpt"],
+    descricao: "Responde com o material da empresa. Não inventa.",
+    chips: ["Claude", "GPT"],
   },
   {
     numero: "04",
+    icon: Database,
     titulo: "Banco com RAG",
     rotulo: "Memória e conhecimento",
-    descricao:
-      "Guarda conversa, cliente e agendamento, e devolve o trecho certo do material que a empresa cadastrou.",
-    chips: ["postgresql", "20 tabelas", "pgvector", "rls", "redis"],
+    descricao: "Guarda tudo e acha o trecho certo.",
+    chips: ["PostgreSQL", "pgvector", "RLS", "Redis"],
   },
   {
     numero: "05",
+    icon: LayoutDashboard,
     titulo: "Painel",
     rotulo: "O que o dono vê",
-    descricao:
-      "Conversas, leads qualificados e agenda. Dá para assumir a conversa a qualquer momento.",
-    chips: ["next.js", "react", "typescript", "vercel"],
+    descricao: "O dono vê tudo e assume quando quiser.",
+    chips: ["Next.js", "React"],
   },
 ];
 
@@ -220,22 +234,23 @@ export default function Home() {
             <h4 className="font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand">
               Da mensagem no WhatsApp até o registro no painel.
             </h4>
-            <p className="mt-4 max-w-[72ch] text-[18px] leading-[29px] text-muted">
-              A mensagem entra pelo WhatsApp, passa pela orquestração, o agente monta a
-              resposta a partir do material da empresa e tudo fica registrado no painel.
-            </p>
-
             {/* Grade de fios: o container é --line e o vão de 1px deixa o
                 fundo aparecer entre os cartões. Raio 0, sem sombra.
                 Uma coluna ou cinco, nunca um número que deixe célula vazia. */}
             <ol className="mt-6 grid grid-cols-1 gap-px border border-line bg-line lg:grid-cols-5">
-              {etapas.map((etapa, i) => (
-                <FlowStep key={etapa.numero} {...etapa} ultima={i === etapas.length - 1} />
+              {etapas.map((etapa) => (
+                <FlowStep key={etapa.numero} {...etapa} />
               ))}
             </ol>
 
             <div className="mt-6">
-              <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
+              <UserRound
+                aria-hidden="true"
+                size={24}
+                strokeWidth={1.5}
+                className="text-gold"
+              />
+              <p className="mt-4 font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
                 Quando passa para uma pessoa
               </p>
               <ul className="mt-4 space-y-4">

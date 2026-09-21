@@ -87,6 +87,11 @@ Pausar o rAF quando a aba está oculta e quando o canvas sai da viewport.
 aria-hidden="true". Não pode ser o elemento de LCP.
 prefers-reduced-motion: renderiza um quadro estático e para.
 
+## Ícones
+lucide-react, importado ícone por ícone. Traço 1.5, 24px, --gold,
+aria-hidden quando o texto ao lado já diz o que ele mostra.
+Continua proibido: robô, cérebro, chip, circuito, rede neural, emoji.
+
 ## Proibido
 Ícone de robô, cérebro, chip, circuito ou rede neural.
 Emoji no lugar de ícone. Texto de leitura abaixo de 15px.

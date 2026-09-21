@@ -1,37 +1,35 @@
+import type { LucideIcon } from "lucide-react";
+
 type FlowStepProps = {
-  /** Ordem da etapa. É o único dourado grande do cartão. */
+  /** Ordem da etapa. Em --muted: o tamanho já dá a ordem, o dourado é do ícone. */
   numero: string;
+  /** Ícone da etapa. Decorativo: o título ao lado já diz o que ele mostra. */
+  icon: LucideIcon;
   /** Nome da etapa. */
   titulo: string;
   /** Rótulo mono em caixa alta, no máximo 6 palavras. */
   rotulo: string;
   /** O que acontece aqui, em texto pequeno. */
   descricao: string;
-  /** Tecnologias, em mono minúsculo. */
+  /** Tecnologias. */
   chips: string[];
-  /** A última etapa não aponta para lugar nenhum. */
-  ultima?: boolean;
 };
 
 export function FlowStep({
   numero,
+  icon: Icon,
   titulo,
   rotulo,
   descricao,
   chips,
-  ultima,
 }: FlowStepProps) {
   return (
     <li className="flex flex-col gap-4 bg-surface p-6 lg:p-4 xl:p-6">
-      <div className="flex items-start justify-between gap-4">
-        <span className="font-mono text-[32px] leading-[37px] font-medium text-gold">
+      <div className="flex items-center justify-between gap-4">
+        <span className="font-mono text-[32px] leading-[37px] font-medium text-muted">
           {numero}
         </span>
-        {!ultima && (
-          <span aria-hidden="true" className="text-[18px] leading-[29px] text-gold">
-            →
-          </span>
-        )}
+        <Icon aria-hidden="true" size={24} strokeWidth={1.5} className="text-gold" />
       </div>
 
       <div>

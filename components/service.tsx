@@ -1,4 +1,8 @@
+import type { LucideIcon } from "lucide-react";
+
 type ServiceProps = {
+  /** Ícone do bloco. Decorativo: o título já diz o que ele mostra. */
+  icon: LucideIcon;
   /** A dor do cliente, não o nome da tecnologia. */
   title: string;
   /** O que esse problema custa hoje. */
@@ -7,10 +11,12 @@ type ServiceProps = {
   delivery: string;
 };
 
-export function Service({ title, cost, delivery }: ServiceProps) {
+export function Service({ icon: Icon, title, cost, delivery }: ServiceProps) {
   return (
     <div className="border-t border-line pt-6">
-      <h3 className="font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand">
+      <Icon aria-hidden="true" size={24} strokeWidth={1.5} className="text-gold" />
+
+      <h3 className="mt-4 font-display-medium text-[24px] leading-[31px] font-medium tracking-[-0.01em] text-sand">
         {title}
       </h3>
 
