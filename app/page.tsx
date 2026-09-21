@@ -1,3 +1,4 @@
+import Image from "next/image";
 import type { CSSProperties } from "react";
 
 // Ícone por ícone, nunca a biblioteca inteira.
@@ -129,6 +130,7 @@ const pular =
 const menu = [
   { href: "#servicos", label: "Serviços" },
   { href: "#portfolio", label: "Portfólio" },
+  { href: "#sobre", label: "Sobre" },
   { href: "#contato", label: "Contato" },
 ];
 
@@ -306,7 +308,7 @@ export default function Home() {
 
       <section
         id="portfolio"
-        className="mx-auto w-full max-w-[1200px] scroll-mt-[calc(var(--header-h)+24px)] px-6 pt-12 pb-24 md:px-16"
+        className="mx-auto w-full max-w-[1200px] scroll-mt-[calc(var(--header-h)+24px)] px-6 py-12 md:px-16"
       >
         <header data-reveal>
           <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
@@ -381,6 +383,56 @@ export default function Home() {
             </li>
           </ol>
         </article>
+      </section>
+
+
+      <section
+        id="sobre"
+        className="mx-auto w-full max-w-[1200px] scroll-mt-[calc(var(--header-h)+24px)] px-6 pt-12 pb-24 md:px-16"
+      >
+        <div className="grid grid-cols-4 items-center gap-x-6 gap-y-12 md:grid-cols-8 lg:grid-cols-12">
+          {/* A caixa 4:5 vem do CSS, então o espaço já está reservado
+              antes de a imagem carregar: sem CLS. O recorte puxa o
+              rosto para o terço superior. */}
+          <Image
+            data-reveal
+            src="/joao.jpg"
+            alt="João Victor Salles em frente ao computador"
+            width={768}
+            height={1376}
+            loading="lazy"
+            sizes="(min-width: 1024px) 440px, 100vw"
+            className="col-span-4 aspect-[4/5] w-full border border-line object-cover object-[center_32%] md:col-span-8 lg:col-span-5"
+          />
+
+          <div
+            data-reveal
+            style={{ transitionDelay: "80ms" }}
+            className="col-span-4 md:col-span-8 lg:col-span-6 lg:col-start-7"
+          >
+            <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
+              Quem faz
+            </p>
+
+            <h2 className="mt-4 max-w-[24ch] font-display text-[32px] leading-[37px] font-semibold tracking-[-0.02em] text-sand">
+              Um desenvolvedor, do começo ao fim.
+            </h2>
+
+            <p className="mt-6 max-w-[72ch] text-[18px] leading-[29px] text-muted">
+              Sou o João. Antes de programar, trabalhei com operação, dados e tráfego
+              pago — por isso começo pelo processo, não pela ferramenta.
+            </p>
+
+            <p className="mt-4 max-w-[72ch] text-[18px] leading-[29px] text-muted">
+              Você fala comigo da primeira conversa à entrega. Sem repasse, sem
+              intermediário.
+            </p>
+
+            <p className="mt-6 font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
+              Palmas-TO · Atendimento remoto
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* A faixa em --surface vai de borda a borda: é a troca de fundo,
