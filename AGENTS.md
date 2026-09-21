@@ -120,3 +120,9 @@ Toda medição de Lighthouse roda contra o build de produção, com o
 dev server parado. Cinco execuções no mínimo; reporte todas e a
 mediana. Comparação entre versões só vale se as duas foram medidas
 nas mesmas condições.
+
+Regressão é demonstrável quando a diferença entre medianas é maior
+que o intervalo interquartil dos dois lados, ou quando a contagem de
+execuções acima da meta sobe de forma consistente em rodadas
+independentes. Amplitude não serve como medida de dispersão: a
+distribuição do Lighthouse é bimodal e tem valores extremos.
