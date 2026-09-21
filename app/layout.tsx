@@ -12,6 +12,16 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
 });
 
+// O h3 usa display 500. Instância separada, sem preload: ela é usada
+// abaixo da dobra e não pode competir com a fonte do h1.
+const spaceGroteskMedium = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["500"],
+  display: "swap",
+  preload: false,
+  variable: "--font-space-grotesk-medium",
+});
+
 // 400 no corpo, 500 nos botões. O 600 não é usado em lugar nenhum.
 const inter = Inter({
   subsets: ["latin"],
@@ -43,7 +53,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
+      className={`${spaceGrotesk.variable} ${spaceGroteskMedium.variable} ${inter.variable} ${jetbrainsMono.variable}`}
     >
       <body>{children}</body>
     </html>
