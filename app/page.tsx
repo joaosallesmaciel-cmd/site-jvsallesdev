@@ -100,6 +100,12 @@ const etapas = [
   },
 ];
 
+// Hover e foco com transition do CSS, como manda o AGENTS.md.
+const linkRodape =
+  "text-[15px] leading-[24px] text-muted transition-colors duration-[400ms] " +
+  "ease-[cubic-bezier(0.2,0.8,0.2,1)] motion-reduce:transition-none hover:text-sand " +
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gold";
+
 // A seta carrega o sentido da frase, então não leva aria-hidden:
 // sem ela o leitor de tela perde o "então".
 const passagem = [
@@ -267,6 +273,69 @@ export default function Home() {
           </div>
         </article>
       </section>
+
+      {/* A faixa em --surface vai de borda a borda: é a troca de fundo,
+          não uma borda, que separa a chamada final do texto acima. */}
+      <section id="contato" className="scroll-mt-24 bg-surface">
+        <div className="mx-auto w-full max-w-[1200px] px-6 py-24 md:px-16">
+          <div className="grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12">
+            <div className="col-span-4 flex flex-col items-center text-center md:col-span-8 lg:col-span-8 lg:col-start-3">
+              <p className="font-mono text-[12px] leading-[14px] font-medium tracking-[0.16em] text-muted uppercase">
+                Próximo passo
+              </p>
+
+              <h2 className="mt-4 font-display text-[32px] leading-[37px] font-semibold tracking-[-0.02em] text-sand">
+                Onde o seu processo trava?
+              </h2>
+
+              <p className="mt-6 max-w-[72ch] text-[18px] leading-[29px] text-muted">
+                Me conta em uma mensagem. Eu respondo e a gente vê se faz sentido
+                automatizar.
+              </p>
+
+              <div className="mt-12 flex flex-wrap justify-center gap-4">
+                <Button
+                  href="https://wa.me/5563992300944?text=Ol%C3%A1%2C%20Jo%C3%A3o.%20Quero%20falar%20sobre%20um%20processo%20da%20minha%20empresa."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Falar no WhatsApp
+                </Button>
+                <Button variant="tertiary" href="mailto:joaosallesmaciel@gmail.com">
+                  joaosallesmaciel@gmail.com
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer className="border-t border-line">
+        <div className="mx-auto w-full max-w-[1200px] px-6 py-12 md:px-16">
+          <div className="grid grid-cols-4 gap-6 md:grid-cols-8 lg:grid-cols-12">
+            <div className="col-span-4 md:col-span-8 lg:col-span-6">
+              {/* A palavra herda currentColor; o chevron segue dourado. */}
+              <Logo height={24} className="text-muted" />
+              <p className="mt-4 text-[15px] leading-[24px] text-muted">
+                Automação de processos para empresas · Palmas-TO
+              </p>
+            </div>
+
+            <div className="col-span-4 flex flex-col gap-2 md:col-span-8 lg:col-span-6 lg:items-end">
+              <a className={linkRodape} href="tel:+5563992300944">
+                (63) 99230-0944
+              </a>
+              <a className={linkRodape} href="mailto:joaosallesmaciel@gmail.com">
+                joaosallesmaciel@gmail.com
+              </a>
+            </div>
+          </div>
+
+          <p className="mt-12 text-[15px] leading-[24px] text-muted">
+            © 2026 João Victor Salles
+          </p>
+        </div>
+      </footer>
     </>
   );
 }
