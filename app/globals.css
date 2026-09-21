@@ -79,6 +79,32 @@ body {
   }
 }
 
+/* ---- Parallax do campo ao rolar ----
+   Dirigido por animation-timeline, sem JavaScript. Onde o navegador
+   não entende, o @supports não casa e o campo fica parado.
+   Desce 60% da própria altura enquanto a página sobe 100% dela:
+   resultado visual, 40% da velocidade do texto. Some no fim do hero. */
+@keyframes jvs-campo-parallax {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(60%);
+    opacity: 0;
+  }
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .jvs-campo {
+      animation: jvs-campo-parallax linear both;
+      animation-timeline: view();
+      animation-range: exit;
+    }
+  }
+}
+
 /* Foco visível igual em toda a página: 2px em --gold, 2px afastado. */
 :focus-visible {
   outline: 2px solid var(--gold);

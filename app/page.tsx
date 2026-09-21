@@ -188,7 +188,7 @@ export default function Home() {
 
       {/* O campo cobre só o hero: preso a este bloco, não à viewport. */}
       <div className="relative">
-        <ChevronField className="field-mask absolute inset-0 -z-10" />
+        <ChevronField className="jvs-campo field-mask absolute inset-0 -z-10" />
 
         <div className="mx-auto flex min-h-[calc(100dvh-var(--header-h))] w-full max-w-[1200px] flex-col px-6 md:px-16">
           <main id="conteudo" className="flex flex-1 items-center py-4 md:py-12">
